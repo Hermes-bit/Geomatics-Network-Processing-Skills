@@ -1,17 +1,17 @@
 # Geomatics-Network-Processing-Skills
 
-Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, et bientôt d'autres. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne d'un script PostGIS testé, d'un jeu de données d'exemple et de demandes types pour l'essayer.
+Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, et bientôt d'autres. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne de scripts testés (PostGIS, et un algorithme QGIS pour la topologie et les PK), d'un jeu de données d'exemple et de demandes types pour l'essayer.
 
-Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : ouvrez une *issue* si un skill se trompe ou s'il manque un cas.
+Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouvrez une *issue*](https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills/issues/new/choose) pour signaler un problème ou proposer un skill (des formulaires vous guident).
 
 ## Les skills
 
 | Skill | Ce qu'il fait | Outils |
 |---|---|---|
-| [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. | PostGIS, pgRouting, QGIS |
+| [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. Rapport PDF et carte HTML à partager. | PostGIS + pgRouting, ou QGIS seul |
 | [import-donnees-sncf-reseau](skills/import-donnees-sncf-reseau/) | Importe les données ouvertes SNCF Réseau (lignes du RFN, gares, passages à niveau, passerelles, ponts-route, passages souterrains) en Lambert 93 pour QGIS, contrôle les PK, détecte les sauts de PK et le sens des tronçons, et prépare les axes, bornes et sauts du skill de référencement PK. | PostGIS, GDAL, QGIS |
 | [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
-| [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS |
+| [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS, ou QGIS seul |
 
 ### Prévus
 
@@ -48,7 +48,35 @@ Chaque skill a son dossier `exemples/` :
 - `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer ;
 - `verifier_resultats.sql` (pour les nouveaux skills) : un test automatique, lancé par `tester_exemples.sh`, qui s'arrête en erreur si les résultats s'écartent des résultats attendus.
 
+### Sans PostGIS, avec QGIS
+
+Les skills `controle-topologie-reseau` et `referencement-pk-ferroviaire` ont un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
+1. Dans QGIS, ouvrez la boîte à outils Traitements, cliquez sur l'icône Python puis *Ajouter un script à la boîte à outils…* et choisissez le fichier `.py`.
+2. L'algorithme apparaît dans *Scripts > Géomatique des réseaux*. Les jeux d'exemple existent aussi en GeoPackage (`exemples/*.gpkg`) pour l'essayer tout de suite.
+
+Pour vérifier les deux algorithmes sans ouvrir QGIS, lancez avec le Python de QGIS (sous Windows, `python-qgis` dans l'« OSGeo4W Shell ») :
+```bash
+python3 outils/tester_qgis.py
+```
+
 La façon la plus parlante de tester : chargez les données d'exemple, donnez à Claude une des demandes types, et comparez sa réponse aux résultats attendus.
+
+## Rapport d'anomalies à partager
+
+`skills/controle-topologie-reseau/rapport/rapport_anomalies.py` transforme le résultat du contrôle de topologie en documents à envoyer :
+- un **PDF** avec la carte des anomalies colorées par gravité, le résumé et la liste détaillée ;
+- une **carte HTML** interactive en un seul fichier, ouvrable dans n'importe quel navigateur, avec des filtres par gravité et la fiche de chaque anomalie au clic.
+
+```bash
+# Depuis PostGIS : exporter d'abord la table des anomalies
+cd skills/controle-topologie-reseau
+./rapport/exporter_anomalies_postgis.sh "dbname=ma_base" anomalies.gpkg
+python3 rapport/rapport_anomalies.py --reseau "reseau.gpkg|layername=troncons" \
+    --anomalies "anomalies.gpkg|layername=anomalies_points" --anomalies "anomalies.gpkg|layername=anomalies_lignes" \
+    --titre "Contrôle de topologie - départ DEP-01" --note "Tolérances : accrochage 0,01 m, quasi-connexion 1 m" \
+    --pdf rapport.pdf --html carte.html
+```
+Depuis QGIS, passez directement les couches *Anomalies ponctuelles* et *Anomalies linéaires* enregistrées par l'algorithme. Un exemple de chaque est dans `skills/controle-topologie-reseau/exemples/` (`rapport_exemple.pdf`, `carte_exemple.html`).
 
 ## Organisation du dépôt
 
@@ -56,11 +84,14 @@ La façon la plus parlante de tester : chargez les données d'exemple, donnez à
 skills/
   <nom-du-skill>/
     SKILL.md              instructions lues par Claude (frontmatter name + description)
-    scripts/              scripts SQL ou Python testés que le skill utilise
+    scripts/              scripts SQL testés que le skill utilise (PostGIS)
+    qgis/                 algorithme de traitement QGIS équivalent (PyQGIS)
+    rapport/              (topologie) rapport PDF et carte HTML à partager
     exemples/             données d'exemple, résultats attendus, demandes types
 modele-skill/             gabarit à copier pour créer un nouveau skill
-outils/                   empaquetage en ZIP et test des exemples
+outils/                   empaquetage en ZIP, tests des exemples (SQL et QGIS)
 .claude-plugin/           déclaration du marketplace pour Claude Code
+.github/ISSUE_TEMPLATE/   formulaires pour signaler un problème ou proposer un skill
 ```
 
 Pour ajouter un skill, voir [CONTRIBUER.md](CONTRIBUER.md).
