@@ -1,0 +1,5 @@
+dist/
+*.zip
+resultat_*.csv
+anomalies.csv
+.DS_Store

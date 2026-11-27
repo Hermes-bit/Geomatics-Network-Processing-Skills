@@ -1,0 +1,22 @@
+{
+  "name": "geomatics-network-processing-skills",
+  "owner": {
+    "name": "Hermes-bit"
+  },
+  "metadata": {
+    "description": "Skills Claude de géomatique des réseaux électriques et ferroviaires (PostGIS, pgRouting, QGIS)",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "geomatique-reseaux",
+      "description": "Contrôle de topologie de réseaux linéaires et référencement PK ferroviaire",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/controle-topologie-reseau",
+        "./skills/referencement-pk-ferroviaire"
+      ]
+    }
+  ]
+}
