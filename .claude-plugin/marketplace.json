@@ -10,11 +10,13 @@
   "plugins": [
     {
       "name": "geomatique-reseaux",
-      "description": "Contrôle de topologie de réseaux linéaires et référencement PK ferroviaire",
+      "description": "Contrôle de topologie, référencement PK ferroviaire, proximité DT-DICT et import des données ouvertes SNCF Réseau",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/controle-topologie-reseau",
+        "./skills/import-donnees-sncf-reseau",
+        "./skills/proximite-dt-dict",
         "./skills/referencement-pk-ferroviaire"
       ]
     }

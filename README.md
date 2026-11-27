@@ -1,6 +1,6 @@
 # Geomatics-Network-Processing-Skills
 
-Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, et bientôt d'autres. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne d'un script PostGIS et d'un algorithme QGIS testés, d'un jeu de données d'exemple et de demandes types pour l'essayer.
+Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, et bientôt d'autres. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne de scripts testés (PostGIS, et un algorithme QGIS pour la topologie et les PK), d'un jeu de données d'exemple et de demandes types pour l'essayer.
 
 Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouvrez une *issue*](https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills/issues/new/choose) pour signaler un problème ou proposer un skill (des formulaires vous guident).
 
@@ -9,13 +9,13 @@ Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouv
 | Skill | Ce qu'il fait | Outils |
 |---|---|---|
 | [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. Rapport PDF et carte HTML à partager. | PostGIS + pgRouting, ou QGIS seul |
+| [import-donnees-sncf-reseau](skills/import-donnees-sncf-reseau/) | Importe les données ouvertes SNCF Réseau (lignes du RFN, gares, passages à niveau, passerelles, ponts-route, passages souterrains) en Lambert 93 pour QGIS, contrôle les PK, détecte les sauts de PK et le sens des tronçons, et prépare les axes, bornes et sauts du skill de référencement PK. | PostGIS, GDAL, QGIS |
+| [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
 | [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS, ou QGIS seul |
 
 ### Prévus
 
-- Analyse de proximité DT-DICT (réseaux à proximité d'une emprise de travaux)
 - Intégration des données ouvertes RTE et Enedis
-- Import des données ouvertes SNCF Réseau
 
 ## Installer un skill dans Claude
 
@@ -45,11 +45,12 @@ PGDATABASE=essai_skills ./outils/tester_exemples.sh
 Chaque skill a son dossier `exemples/` :
 - `donnees_exemple.sql` : un petit jeu de données fictif en Lambert 93, avec des pièges volontaires ;
 - `resultats_attendus.md` : ce que le skill doit trouver ;
-- `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer.
+- `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer ;
+- `verifier_resultats.sql` (pour les nouveaux skills) : un test automatique, lancé par `tester_exemples.sh`, qui s'arrête en erreur si les résultats s'écartent des résultats attendus.
 
 ### Sans PostGIS, avec QGIS
 
-Chaque skill a un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
+Les skills `controle-topologie-reseau` et `referencement-pk-ferroviaire` ont un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
 1. Dans QGIS, ouvrez la boîte à outils Traitements, cliquez sur l'icône Python puis *Ajouter un script à la boîte à outils…* et choisissez le fichier `.py`.
 2. L'algorithme apparaît dans *Scripts > Géomatique des réseaux*. Les jeux d'exemple existent aussi en GeoPackage (`exemples/*.gpkg`) pour l'essayer tout de suite.
 

@@ -13,6 +13,8 @@ body:
       label: Skill concerné
       options:
         - controle-topologie-reseau
+        - import-donnees-sncf-reseau
+        - proximite-dt-dict
         - referencement-pk-ferroviaire
         - Autre / dépôt en général
     validations:
