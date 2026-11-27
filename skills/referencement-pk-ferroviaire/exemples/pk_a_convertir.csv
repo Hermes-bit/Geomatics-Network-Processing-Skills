@@ -1,0 +1,6 @@
+id,code_ligne,pk,decalage_m,description
+E01,830000,11+250,0,Signal sur l'axe
+E02,830000,14+600,-4.5,Armoire à droite de la voie
+E03,830000,15+500,0,PK dans la lacune (n'existe pas)
+E04,830000,17+080,3,Poteau caténaire à gauche
+E05,830000,21+000,0,PK au-delà de la fin de ligne
