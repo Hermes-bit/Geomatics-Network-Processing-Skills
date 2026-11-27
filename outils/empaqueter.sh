@@ -8,6 +8,6 @@ for dossier in skills/${1:-*}/; do
   nom=$(basename "$dossier")
   [ -f "$dossier/SKILL.md" ] || { echo "Ignoré : $nom (pas de SKILL.md)"; continue; }
   rm -f "dist/$nom.zip"
-  (cd skills && zip -qr "../dist/$nom.zip" "$nom" -x '*.DS_Store' '*/resultat_*.csv' '*/anomalies.csv')
+  (cd skills && zip -qr "../dist/$nom.zip" "$nom" -x '*.DS_Store' '*/__pycache__/*' '*/resultat_*.csv' '*/anomalies.csv')
   echo "dist/$nom.zip"
 done

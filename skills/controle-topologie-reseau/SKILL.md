@@ -5,7 +5,7 @@ description: Contrôle la topologie d'un réseau linéaire électrique (HTA, HTB
 
 # Contrôle de topologie d'un réseau linéaire
 
-Ce skill vérifie qu'un réseau de lignes (câbles, lignes aériennes, voies ferrées) forme un graphe cohérent, et livre la liste des anomalies localisées. Il s'appuie sur PostGIS et pgRouting. Un script SQL testé est fourni : `scripts/controles_topologie.sql`.
+Ce skill vérifie qu'un réseau de lignes (câbles, lignes aériennes, voies ferrées) forme un graphe cohérent, et livre la liste des anomalies localisées. Il s'appuie sur PostGIS et pgRouting, ou sur QGIS seul. Deux versions testées sont fournies : `scripts/controles_topologie.sql` (PostGIS) et `qgis/controle_topologie_reseau.py` (algorithme de traitement QGIS).
 
 ## Règle d'or
 
@@ -72,7 +72,19 @@ Prendre en compte les franchissements : sans attribut de pose ou de niveau, **ne
 Si l'utilisateur n'a pas pgRouting, les composantes peuvent se calculer avec `ST_ClusterIntersecting` ou `ST_ClusterDBSCAN(geom, eps := tol, minpoints := 1)`, mais la détection des boucles demande pgRouting ou un parcours en Python (NetworkX).
 
 ## Dans QGIS sans PostGIS
-Outils équivalents : *Vérifier la validité*, *Vérificateur de topologie* (règles « ne doit pas avoir d'extrémités pendantes », « ne doit pas avoir de doublons »), *Accrocher les géométries à la couche*, *Lignes : intersections*. Indiquer que le contrôle des boucles en radial et des composantes non alimentées n'y est pas disponible directement.
+Utiliser l'algorithme fourni `qgis/controle_topologie_reseau.py` : mêmes contrôles, mêmes types d'anomalies et mêmes gravités que le script SQL, y compris les boucles en radial et les composantes non alimentées (graphe calculé en Python, aucune extension à installer). Testé avec QGIS 3.34.
+1. Boîte à outils Traitements > icône Python > *Ajouter un script à la boîte à outils…* > choisir le fichier.
+2. Lancer *Scripts > Géomatique des réseaux > Contrôle de topologie d'un réseau*, choisir la couche des tronçons et, si elles existent, celle des postes, puis faire correspondre les champs (identifiant, tension, pose, état d'exploitation, type de poste). Les champs facultatifs peuvent rester vides : le dire dans le résumé (sans pose, tout croisement est signalé ; sans état, aucune boucle n'est considérée comme ouverte).
+3. Sorties : *Anomalies ponctuelles*, *Anomalies linéaires* (mêmes champs que `topo_controle.anomalies`) et *Résumé des anomalies*.
+La couche doit être dans un SCR projeté en mètres : l'algorithme refuse une couche en degrés et prévient si le SCR n'est pas Lambert 93.
+
+Outils natifs complémentaires : *Vérifier la validité*, *Vérificateur de topologie*, *Accrocher les géométries à la couche*.
+
+## Rapport à partager
+Pour livrer le résultat à quelqu'un qui n'a ni PostGIS ni QGIS ouvert, produire un rapport avec `rapport/rapport_anomalies.py` (en ligne de commande avec le Python de QGIS ; sous Windows, `python-qgis` dans l’« OSGeo4W Shell ») :
+- un **PDF** : carte des anomalies colorées par gravité sur le fond du réseau, résumé par type, puis liste détaillée ;
+- une **carte HTML** interactive en un seul fichier (fond OpenStreetMap, filtres par gravité, fiche de chaque anomalie au clic), à envoyer par courriel ou à déposer sur un intranet.
+Depuis PostGIS, exporter d'abord les anomalies avec `rapport/exporter_anomalies_postgis.sh` (deux couches, points et lignes). Passer les hypothèses (tolérances, champs utilisés) avec `--note` pour qu'elles figurent sur le rapport.
 
 ## Exemple
-Le dossier `exemples/` contient un petit réseau HTA avec des anomalies volontaires (`donnees_exemple.sql`), les résultats attendus (`resultats_attendus.md`) et des demandes types (`demandes_exemple.md`).
+Le dossier `exemples/` contient un petit réseau HTA avec des anomalies volontaires (`donnees_exemple.sql` pour PostGIS, `reseau_exemple.gpkg` pour QGIS), les résultats attendus (`resultats_attendus.md`), des demandes types (`demandes_exemple.md`), et le rapport produit sur ces données (`rapport_exemple.pdf`, `carte_exemple.html`).

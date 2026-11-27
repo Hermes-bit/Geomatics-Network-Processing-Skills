@@ -1,0 +1,60 @@
+name: Proposer un skill
+description: Une idée de nouveau skill de géomatique des réseaux (électrique, ferroviaire, gaz, télécom, eau…).
+title: "[Skill] "
+labels: ["proposition de skill"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Décrivez le besoin métier comme vous l'expliqueriez à un collègue. Pas besoin d'avoir la solution technique.
+  - type: input
+    id: nom
+    attributes:
+      label: Nom proposé
+      placeholder: "ex. proximite-dt-dict"
+  - type: dropdown
+    id: domaine
+    attributes:
+      label: Domaine
+      multiple: true
+      options:
+        - Réseau électrique
+        - Réseau ferroviaire
+        - Gaz
+        - Télécom
+        - Eau / assainissement
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Le besoin
+      description: Quelle tâche le skill doit-il accomplir, et quand l'utiliseriez-vous ?
+    validations:
+      required: true
+  - type: textarea
+    id: demandes
+    attributes:
+      label: Demandes types
+      description: Deux ou trois phrases que vous diriez à Claude pour lancer ce travail.
+      placeholder: |
+        - Liste les exploitants concernés par ma zone de travaux
+        - ...
+  - type: textarea
+    id: donnees
+    attributes:
+      label: Données d'entrée et de sortie
+      description: Formats, sources (open data, base métier), SCR, résultat attendu (couche, CSV, rapport).
+  - type: textarea
+    id: pieges
+    attributes:
+      label: Pièges du métier
+      description: Règles, normes ou cas particuliers qu'un skill doit connaître pour ne pas se tromper.
+  - type: checkboxes
+    id: aide
+    attributes:
+      label: Contribution
+      options:
+        - label: Je peux fournir un petit jeu de données d'exemple (fictif ou anonymisé)
+        - label: Je peux aider à tester le skill

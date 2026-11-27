@@ -1,0 +1,62 @@
+name: Signaler un problème
+description: Un skill se trompe, un script plante ou un résultat ne correspond pas à ce qui est attendu.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler le problème. **Ne joignez pas de données sensibles** (réseaux sensibles, données personnelles) : un petit extrait anonymisé ou fictif suffit souvent.
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill concerné
+      options:
+        - controle-topologie-reseau
+        - referencement-pk-ferroviaire
+        - Autre / dépôt en général
+    validations:
+      required: true
+  - type: dropdown
+    id: outil
+    attributes:
+      label: Comment l'avez-vous utilisé ?
+      multiple: true
+      options:
+        - Avec Claude (claude.ai ou application)
+        - Avec Claude Code
+        - Script SQL (PostGIS)
+        - Script QGIS (PyQGIS / boîte à outils Traitements)
+        - Rapport PDF ou carte HTML
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Ce qui s'est passé
+      description: Ce que vous avez demandé ou lancé, et ce que vous avez obtenu.
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce que vous attendiez
+    validations:
+      required: true
+  - type: textarea
+    id: reproduire
+    attributes:
+      label: Pour reproduire
+      description: Commandes lancées, demande faite à Claude, ou extrait de données (WKT, GeoJSON, CSV) permettant de reproduire le problème.
+      render: text
+  - type: textarea
+    id: environnement
+    attributes:
+      label: Environnement
+      description: Versions de PostgreSQL, PostGIS, pgRouting ou QGIS, système d'exploitation, SCR des données.
+      placeholder: "PostgreSQL 16, PostGIS 3.4, pgRouting 3.6, QGIS 3.34, données en EPSG:2154"
+  - type: textarea
+    id: messages
+    attributes:
+      label: Messages d'erreur
+      render: text

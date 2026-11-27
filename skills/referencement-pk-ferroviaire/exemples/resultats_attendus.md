@@ -41,3 +41,7 @@ Les écarts de quelques décimètres (P01, P05) viennent des bornes, relevées v
 |---|---|---|---|---|
 | L01 | 12+200 | 13+500 | 1 298.9 m | aucun |
 | L02 | 15+100 | 16+300 | 950.4 m (au lieu de 1 200) | contient la lacune 15+400 = 15+650 |
+
+## Version QGIS
+
+L'algorithme `qgis/referencement_pk_ferroviaire.py`, lancé sur `ligne_exemple.gpkg` (couches `axes`, `bornes_pk`, `sauts_pk`) avec les trois CSV ci-dessus, doit donner les mêmes coordonnées, PK, longueurs et avertissements. `python3 outils/tester_qgis.py` le vérifie automatiquement.

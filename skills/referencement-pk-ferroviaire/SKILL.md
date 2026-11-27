@@ -5,7 +5,7 @@ description: Convertit des points kilométriques ferroviaires (PK au format km+m
 
 # Référencement linéaire ferroviaire (PK <-> coordonnées)
 
-Ce skill positionne des objets le long d'une ligne ferroviaire à partir de leur PK, ou retrouve le PK d'un objet à partir de ses coordonnées. Un script PostGIS testé est fourni : `scripts/referencement_pk.sql`.
+Ce skill positionne des objets le long d'une ligne ferroviaire à partir de leur PK, ou retrouve le PK d'un objet à partir de ses coordonnées. Deux versions testées sont fournies : `scripts/referencement_pk.sql` (PostGIS) et `qgis/referencement_pk_ferroviaire.py` (algorithme de traitement QGIS, sans PostGIS).
 
 ## Ce qu'il faut savoir sur les PK
 - Un PK s'écrit `km+m` : `15+342` = 15 342 m depuis l'origine de la ligne. Accepter aussi `15+342.5`, `015+342`, des espaces. Toujours renvoyer le même format.
@@ -56,8 +56,16 @@ Un CSV par conversion, avec au minimum :
 3. Exécuter. Le script s'arrête avec un message clair si l'axe ne se fusionne pas en une seule ligne.
 4. Utiliser les fonctions `pk_ref.pk_vers_point`, `pk_ref.point_vers_pk`, `pk_ref.evenement_lineaire`, `pk_ref.pk_vers_m` et `pk_ref.m_vers_pk`. `exemples/lancer_exemple.sql` montre comment charger des CSV et écrire les résultats avec `\copy`.
 
+## Dans QGIS sans PostGIS
+Utiliser l'algorithme fourni `qgis/referencement_pk_ferroviaire.py` : même calage sur les bornes, mêmes sauts de PK, même convention de décalage et mêmes avertissements que le script SQL. Testé avec QGIS 3.34.
+1. Boîte à outils Traitements > icône Python > *Ajouter un script à la boîte à outils…* > choisir le fichier.
+2. Lancer *Scripts > Géomatique des réseaux > Référencement PK ferroviaire* : couche d'axes (avec code ligne et voie à traiter), bornes kilométriques, sauts de PK s'il y en a.
+3. Donner une ou plusieurs entrées selon le besoin : table de PK à convertir (CSV chargé sans géométrie, avec un champ décalage facultatif), couche de points à localiser, table d'événements de PK à PK.
+4. Sorties : *PK convertis en points*, *Points localisés en PK*, *Événements linéaires* (avec les attributs d'origine, la méthode et l'avertissement) et *Points de calage* pour contrôler les bornes (distance à l'axe, PK non croissant).
+L'algorithme s'arrête avec un message clair si l'axe ne se fusionne pas en une seule ligne ou s'il est en degrés.
+
 ## Sources de données
 Les données ouvertes de SNCF Réseau (data.sncf.com) publient notamment les lignes du réseau ferré national avec leur code ligne et des points kilométriques : à vérifier au moment de l'usage, les jeux et leurs champs évoluent.
 
 ## Exemple
-`exemples/` contient une ligne fictive avec un axe en deux morceaux dont un à l'envers, des bornes imprécises et un saut de PK (`donnees_exemple.sql`), des CSV d'entrée, les résultats attendus (`resultats_attendus.md`) et des demandes types (`demandes_exemple.md`).
+`exemples/` contient une ligne fictive avec un axe en deux morceaux dont un à l'envers, des bornes imprécises et un saut de PK (`donnees_exemple.sql` pour PostGIS, `ligne_exemple.gpkg` pour QGIS), des CSV d'entrée, les résultats attendus (`resultats_attendus.md`) et des demandes types (`demandes_exemple.md`).

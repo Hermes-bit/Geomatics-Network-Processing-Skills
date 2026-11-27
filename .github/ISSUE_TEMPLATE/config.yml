@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ajouter un skill vous-même
+    url: https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills/blob/main/CONTRIBUER.md
+    about: Le guide de contribution explique la structure d'un skill et comment le tester.
