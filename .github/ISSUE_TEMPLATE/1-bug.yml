@@ -17,6 +17,7 @@ body:
         - import-donnees-sncf-reseau
         - proximite-dt-dict
         - referencement-pk-ferroviaire
+        - vegetation-lidar-hd
         - Autre / dépôt en général
     validations:
       required: true
@@ -29,6 +30,7 @@ body:
         - Avec Claude (claude.ai ou application)
         - Avec Claude Code
         - Script SQL (PostGIS)
+        - Script Python (LiDAR)
         - Script QGIS (PyQGIS / boîte à outils Traitements)
         - Rapport PDF ou carte HTML
     validations:

@@ -23,3 +23,10 @@ for dossier in skills/*/; do
   )
   echo "    Comparer avec $dossier""exemples/resultats_attendus.md"
 done
+# Skills en Python (sans base de données) : exemples/test_*.py
+for test in skills/*/exemples/test_*.py; do
+  [ -f "$test" ] || continue
+  echo "=== $(basename "$(dirname "$(dirname "$test")")") (Python)"
+  python3 "$test" > /dev/null || { python3 "$test"; exit 1; }
+  echo "    $test : conforme"
+done

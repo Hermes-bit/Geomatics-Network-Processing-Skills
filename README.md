@@ -13,10 +13,7 @@ Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouv
 | [import-donnees-sncf-reseau](skills/import-donnees-sncf-reseau/) | Importe les données ouvertes SNCF Réseau (lignes du RFN, gares, passages à niveau, passerelles, ponts-route, passages souterrains) en Lambert 93 pour QGIS, contrôle les PK, détecte les sauts de PK et le sens des tronçons, et prépare les axes, bornes et sauts du skill de référencement PK. | PostGIS, GDAL, QGIS |
 | [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
 | [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS, ou QGIS seul |
-
-### Prévus
-
-- Végétation près des lignes électriques et des voies ferrées à partir du LiDAR HD de l'IGN
+| [vegetation-lidar-hd](skills/vegetation-lidar-hd/) | Repère la végétation trop haute ou trop proche des lignes électriques aériennes et des voies ferrées à partir des nuages de points classés LiDAR HD de l'IGN : hauteur au-dessus du sol, risque de chute d'arbre, hauteur excessive dans l'emprise, priorité par tronçon de 25 m et par côté, sortie CSV et GeoJSON. | Python (numpy, laspy), QGIS |
 
 ## Installer un skill dans Claude
 
@@ -48,6 +45,8 @@ Chaque skill a son dossier `exemples/` :
 - `resultats_attendus.md` : ce que le skill doit trouver ;
 - `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer ;
 - `verifier_resultats.sql` (pour les nouveaux skills) : un test automatique, lancé par `tester_exemples.sh`, qui s'arrête en erreur si les résultats s'écartent des résultats attendus.
+
+Le skill `vegetation-lidar-hd` n'utilise pas de base : il lui faut Python 3 avec `numpy` et `laspy` (`pip install numpy "laspy[lazrs]"`). Son test `exemples/test_vegetation.py` génère un petit nuage fictif au format LiDAR HD, lance l'analyse et compare au résultat attendu ; `tester_exemples.sh` le lance aussi.
 
 ### Sans PostGIS, avec QGIS
 

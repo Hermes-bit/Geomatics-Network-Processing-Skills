@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "geomatique-reseaux",
-      "description": "Contrôle de topologie, référencement PK, proximité DT-DICT et import des données ouvertes SNCF Réseau, RTE et Enedis",
+      "description": "Contrôle de topologie, référencement PK, proximité DT-DICT, import des données ouvertes SNCF Réseau, RTE et Enedis, et végétation à partir du LiDAR HD",
       "source": "./",
       "strict": false,
       "skills": [
@@ -18,7 +18,8 @@
         "./skills/import-donnees-rte-enedis",
         "./skills/import-donnees-sncf-reseau",
         "./skills/proximite-dt-dict",
-        "./skills/referencement-pk-ferroviaire"
+        "./skills/referencement-pk-ferroviaire",
+        "./skills/vegetation-lidar-hd"
       ]
     }
   ]
