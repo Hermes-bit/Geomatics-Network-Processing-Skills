@@ -10,11 +10,12 @@
   "plugins": [
     {
       "name": "geomatique-reseaux",
-      "description": "Contrôle de topologie, référencement PK ferroviaire, proximité DT-DICT et import des données ouvertes SNCF Réseau",
+      "description": "Contrôle de topologie, référencement PK, proximité DT-DICT et import des données ouvertes SNCF Réseau, RTE et Enedis",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/controle-topologie-reseau",
+        "./skills/import-donnees-rte-enedis",
         "./skills/import-donnees-sncf-reseau",
         "./skills/proximite-dt-dict",
         "./skills/referencement-pk-ferroviaire"

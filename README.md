@@ -9,13 +9,14 @@ Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : ouvr
 | Skill | Ce qu'il fait | Outils |
 |---|---|---|
 | [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. | PostGIS, pgRouting, QGIS |
+| [import-donnees-rte-enedis](skills/import-donnees-rte-enedis/) | Importe les données ouvertes RTE (ODRÉ) et Enedis / Agence ORE (lignes HTB, HTA, BT aériennes et souterraines, postes) en Lambert 93, avec tensions en kV et pose normalisées, au format du skill de topologie et du skill DT-DICT. | PostGIS, GDAL, QGIS |
 | [import-donnees-sncf-reseau](skills/import-donnees-sncf-reseau/) | Importe les données ouvertes SNCF Réseau (lignes du RFN, gares, passages à niveau, passerelles, ponts-route, passages souterrains) en Lambert 93 pour QGIS, contrôle les PK, détecte les sauts de PK et le sens des tronçons, et prépare les axes, bornes et sauts du skill de référencement PK. | PostGIS, GDAL, QGIS |
 | [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
 | [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS |
 
 ### Prévus
 
-- Intégration des données ouvertes RTE et Enedis
+- Végétation près des lignes électriques et des voies ferrées à partir du LiDAR HD de l'IGN
 
 ## Installer un skill dans Claude
 
