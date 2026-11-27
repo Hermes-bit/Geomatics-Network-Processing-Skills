@@ -10,7 +10,8 @@
    - `donnees_exemple.sql` (ou un GeoPackage / GeoJSON léger) : petit, fictif, en Lambert 93, avec des cas pièges ;
    - `resultats_attendus.md` : ce que le skill doit produire sur ces données ;
    - `demandes_exemple.md` : 3 à 5 demandes à faire à Claude ;
-   - si besoin, `lancer_exemple.sql` pour produire les fichiers de sortie.
+   - si besoin, `lancer_exemple.sql` pour produire les fichiers de sortie ;
+   - `verifier_resultats.sql` : un test qui s'arrête en erreur (`RAISE EXCEPTION`) si les résultats ne sont pas ceux attendus.
 5. Ajoutez le skill au tableau du `README.md` et à la liste `skills` de `.claude-plugin/marketplace.json`.
 6. Vérifiez avec `./outils/tester_exemples.sh` et `./outils/empaqueter.sh <nom-du-skill>`.
 
