@@ -218,12 +218,31 @@ def lire_debut(chemin):
         return f.read(5)
 
 
+def tester_extension(tmp):
+    print("=== extension QGIS (outils/empaqueter_extension.sh)")
+    import subprocess
+    import zipfile
+    subprocess.run([os.path.join(RACINE, "outils", "empaqueter_extension.sh")], check=True, capture_output=True)
+    with zipfile.ZipFile(os.path.join(RACINE, "dist", "geomatique_reseaux.zip")) as z:
+        z.extractall(os.path.join(tmp, "extension"))
+    sys.path.insert(0, os.path.join(tmp, "extension"))
+    from geomatique_reseaux.fournisseur import FournisseurGeomatiqueReseaux
+    from qgis.core import QgsApplication
+    f = FournisseurGeomatiqueReseaux()
+    QgsApplication.processingRegistry().addProvider(f)
+    ids = sorted(a.id() for a in f.algorithms())
+    verifier(ids == ["geomatique_reseaux:analyse_impact_chantier", "geomatique_reseaux:controle_topologie_reseau",
+                     "geomatique_reseaux:proximite_dt_dict", "geomatique_reseaux:referencement_pk_ferroviaire"],
+             "l'extension charge les 4 algorithmes : %s" % ids)
+
+
 if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as tmp:
         tester_topologie(tmp)
         tester_pk(tmp)
         tester_dtdict(tmp)
         tester_impact(tmp)
+        tester_extension(tmp)
     print("\n%s" % ("Tout est conforme aux résultats attendus." if not erreurs
                     else "%d écart(s) avec les résultats attendus." % len(erreurs)))
     sys.exit(1 if erreurs else 0)

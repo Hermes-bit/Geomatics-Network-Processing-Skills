@@ -122,7 +122,11 @@ def lignes_simples(g):
 
 
 def trouver_algorithme(nom):
-    for a in QgsApplication.processingRegistry().algorithms():
+    """Identifiant d'un algorithme du dépôt : celui de l'extension s'il existe, sinon un script ajouté."""
+    reg = QgsApplication.processingRegistry()
+    if reg.algorithmById("geomatique_reseaux:" + nom):
+        return "geomatique_reseaux:" + nom
+    for a in reg.algorithms():
         if a.name() == nom:
             return a.id()
     return None

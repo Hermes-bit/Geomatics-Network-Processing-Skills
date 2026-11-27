@@ -52,6 +52,15 @@ Le skill `analyse-impact-chantier` enchaîne les autres : son test `exemples/cha
 
 Le skill `vegetation-lidar-hd` n'utilise pas de base : il lui faut Python 3 avec `numpy` et `laspy` (`pip install numpy "laspy[lazrs]"`). Son test `exemples/test_vegetation.py` génère un petit nuage fictif au format LiDAR HD, lance l'analyse et compare au résultat attendu ; `tester_exemples.sh` le lance aussi.
 
+### Dans QGIS, en un clic : l'extension « Géomatique des réseaux »
+
+L'extension regroupe tous les algorithmes QGIS du dépôt (analyse d'impact, DT-DICT, PK, topologie) et ajoute un bouton **Analyse d'impact d'un chantier** dans la barre d'outils, plus un menu *Extensions > Géomatique des réseaux*.
+1. Créez le ZIP : `./outils/empaqueter_extension.sh` (il écrit `dist/geomatique_reseaux.zip`).
+2. Dans QGIS : *Extensions > Installer/Gérer les extensions > Installer depuis un ZIP*, choisissez le fichier, puis *Installer l'extension*. Elle est marquée expérimentale : cochez « Afficher les extensions expérimentales » dans les paramètres si besoin.
+3. Cliquez sur le bouton de la barre d'outils, remplissez la fenêtre (emprise, réseaux, voie, végétation, parcelles, fichiers PDF et HTML) et lancez.
+
+Les algorithmes de l'extension sont copiés des dossiers `skills/*/qgis/` au moment de l'empaquetage : il n'y a qu'une version de chaque algorithme. Pas besoin d'ajouter les scripts un par un.
+
 ### Sans PostGIS, avec QGIS
 
 Les skills `controle-topologie-reseau`, `referencement-pk-ferroviaire`, `proximite-dt-dict` et `analyse-impact-chantier` ont un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
@@ -106,7 +115,8 @@ skills/
     rapport/              (topologie, impact) rapport PDF et carte HTML à partager
     exemples/             données d'exemple, résultats attendus, demandes types
 modele-skill/             gabarit à copier pour créer un nouveau skill
-outils/                   empaquetage en ZIP, tests des exemples (SQL et QGIS)
+extension-qgis/           extension QGIS (bouton, menu et fournisseur Traitements)
+outils/                   empaquetage en ZIP (skills et extension QGIS), tests des exemples (SQL et QGIS)
 .claude-plugin/           déclaration du marketplace pour Claude Code
 .github/ISSUE_TEMPLATE/   formulaires pour signaler un problème ou proposer un skill
 ```

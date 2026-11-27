@@ -1,0 +1,16 @@
+[general]
+name=Géomatique des réseaux
+qgisMinimumVersion=3.22
+description=Analyse d'impact d'un chantier, proximité DT-DICT, référencement PK ferroviaire et contrôle de topologie des réseaux électriques et ferroviaires.
+about=Algorithmes de traitement des skills « Geomatics-Network-Processing-Skills » : analyse d'impact d'un chantier (registre des risques, exploitants, parcelles, dossier PDF et carte HTML), pré-analyse DT-DICT, conversion PK <-> coordonnées et contrôle de topologie. Un bouton de la barre d'outils ouvre l'analyse d'impact. Pré-analyses : ne remplacent ni le guichet unique ni l'avis des exploitants.
+version=0.1.0
+author=Hermes-bit
+email=noreply@github.com
+homepage=https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills
+repository=https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills
+tracker=https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills/issues
+tags=réseaux,DT-DICT,PK,ferroviaire,électricité,topologie,chantier
+category=Analysis
+hasProcessingProvider=yes
+experimental=True
+icon=icone.svg

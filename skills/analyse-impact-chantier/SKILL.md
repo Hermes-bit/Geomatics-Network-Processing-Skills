@@ -61,6 +61,7 @@ Pour la voie ferrée, le registre donne les PK de la section à moins de 20 m de
    ```
 
 ## Dans QGIS sans PostGIS
+Le plus simple : installer l'extension « Géomatique des réseaux » du dépôt (`./outils/empaqueter_extension.sh`, puis *Extensions > Installer depuis un ZIP*). Elle ajoute un bouton *Analyse d'impact d'un chantier* dans la barre d'outils et contient déjà les algorithmes DT-DICT et PK. Sinon :
 1. Ajouter à la boîte à outils (Traitements > icône Python > *Ajouter un script à la boîte à outils…*) trois scripts : `qgis/analyse_impact_chantier.py`, `../proximite-dt-dict/qgis/proximite_dt_dict.py` et `../referencement-pk-ferroviaire/qgis/referencement_pk_ferroviaire.py`.
 2. Lancer *Scripts > Géomatique des réseaux > Analyse d'impact d'un chantier* : emprise, ouvrages, exploitants, et selon le cas axes, bornes et sauts de PK (code ligne, voie), tronçons de végétation, parcelles et propriétaires. Les champs attendus sont ceux des skills d'import ; sinon, les renommer avec *Refactoriser les champs*.
 3. Donner un fichier pour *Dossier PDF* et *Carte HTML*. Les couches de sortie (registre des risques, exploitants, ouvrages, voie, végétation, parcelles, zone) s'ouvrent dans le projet.
