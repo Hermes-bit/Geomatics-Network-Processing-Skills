@@ -9,11 +9,11 @@ Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : ouvr
 | Skill | Ce qu'il fait | Outils |
 |---|---|---|
 | [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. | PostGIS, pgRouting, QGIS |
+| [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
 | [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS |
 
 ### Prévus
 
-- Analyse de proximité DT-DICT (réseaux à proximité d'une emprise de travaux)
 - Intégration des données ouvertes RTE et Enedis
 - Import des données ouvertes SNCF Réseau
 
@@ -45,7 +45,8 @@ PGDATABASE=essai_skills ./outils/tester_exemples.sh
 Chaque skill a son dossier `exemples/` :
 - `donnees_exemple.sql` : un petit jeu de données fictif en Lambert 93, avec des pièges volontaires ;
 - `resultats_attendus.md` : ce que le skill doit trouver ;
-- `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer.
+- `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer ;
+- `verifier_resultats.sql` (pour les nouveaux skills) : un test automatique, lancé par `tester_exemples.sh`, qui s'arrête en erreur si les résultats s'écartent des résultats attendus.
 
 La façon la plus parlante de tester : chargez les données d'exemple, donnez à Claude une des demandes types, et comparez sa réponse aux résultats attendus.
 
