@@ -13,6 +13,7 @@ body:
       label: Skill concerné
       options:
         - analyse-bilan-electrique
+        - analyse-impact-chantier
         - controle-topologie-reseau
         - import-donnees-rte-enedis
         - import-donnees-sncf-reseau

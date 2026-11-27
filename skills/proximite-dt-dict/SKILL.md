@@ -5,7 +5,7 @@ description: Repère les réseaux (électricité, gaz, télécom, eau, chaleur, 
 
 # Proximité DT-DICT : réseaux et exploitants concernés par un chantier
 
-Ce skill croise une emprise de travaux avec des couches de réseaux et livre, pour chaque exploitant, ce qui le concerne et à quelle distance. Un script PostGIS testé est fourni : `scripts/proximite_dt_dict.sql`.
+Ce skill croise une emprise de travaux avec des couches de réseaux et livre, pour chaque exploitant, ce qui le concerne et à quelle distance. Deux versions testées sont fournies : `scripts/proximite_dt_dict.sql` (PostGIS) et `qgis/proximite_dt_dict.py` (algorithme de traitement QGIS, sans PostGIS).
 
 ## Règle d'or
 - **Ce n'est pas la déclaration officielle.** La liste des exploitants à consulter est celle que renvoie le guichet unique, le téléservice [reseaux-et-canalisations.ineris.fr](https://www.reseaux-et-canalisations.ineris.fr). Ses zones d'implantation ne sont pas publiées en données ouvertes. Le skill sert à préparer l'emprise, à contrôler la réponse du guichet unique et à repérer ce qui manque. Le dire dans chaque réponse.
@@ -69,7 +69,11 @@ Dans la réponse :
 4. Exporter avec `exemples/lancer_exemple.sql`, ou dans QGIS (Couche > Ajouter une couche PostGIS).
 
 ## Dans QGIS sans PostGIS
-*Tampon* sur l'emprise (marge choisie), *Extraire par localisation* sur chaque couche de réseau, puis *Joindre les attributs par localisation (résumé)* pour la distance. Le calcul des zones d'incertitude par classe se fait avec un tampon à distance variable (expression `CASE` sur la classe).
+Utiliser l'algorithme fourni `qgis/proximite_dt_dict.py` : mêmes classes de précision, zones d'incertitude, fuseau aérien, alertes et contrôles de l'emprise que le script SQL. Testé avec QGIS 3.34.
+1. Boîte à outils Traitements > icône Python > *Ajouter un script à la boîte à outils…* > choisir le fichier.
+2. Lancer *Scripts > Géomatique des réseaux > Proximité DT-DICT* : emprise, travaux urgents ou non, couche des ouvrages (les champs proposés par défaut sont ceux des skills d'import : exploitant, categorie, pose, classe_precision, flexible, branchement, tension_kv), table des exploitants facultative, marge.
+3. Sorties : *Ouvrages concernés* (à styler par `situation`), *Exploitants concernés* et *Contrôle de l'emprise*.
+Le skill `analyse-impact-chantier` utilise cet algorithme pour sa version QGIS.
 
 ## Exemple
-`exemples/` contient un chantier fictif en trois polygones et neuf ouvrages avec des pièges volontaires (`donnees_exemple.sql`), les résultats attendus (`resultats_attendus.md`), un test automatique (`verifier_resultats.sql`) et des demandes types (`demandes_exemple.md`).
+`exemples/` contient un chantier fictif en trois polygones et neuf ouvrages avec des pièges volontaires (`donnees_exemple.sql`, et `chantier_exemple.gpkg` pour QGIS), les résultats attendus (`resultats_attendus.md`), un test automatique (`verifier_resultats.sql`) et des demandes types (`demandes_exemple.md`).

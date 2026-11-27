@@ -1,6 +1,6 @@
 # Geomatics-Network-Processing-Skills
 
-Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, et bientôt d'autres. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne de scripts testés (PostGIS, et un algorithme QGIS pour la topologie et les PK), d'un jeu de données d'exemple et de demandes types pour l'essayer.
+Des **skills Claude** pour la géomatique des réseaux électriques et ferroviaires : contrôle de topologie, référencement par PK, DT-DICT, données ouvertes, végétation LiDAR, bilans électriques, et une analyse d'impact de chantier qui les enchaîne. Chaque skill apprend à Claude une méthode de travail précise (étapes, pièges, format de sortie) et s'accompagne de scripts testés (PostGIS, et un algorithme QGIS pour la topologie et les PK), d'un jeu de données d'exemple et de demandes types pour l'essayer.
 
 Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouvrez une *issue*](https://github.com/Hermes-bit/Geomatics-Network-Processing-Skills/issues/new/choose) pour signaler un problème ou proposer un skill (des formulaires vous guident).
 
@@ -8,11 +8,12 @@ Le dépôt est rempli au fur et à mesure. Les retours sont les bienvenus : [ouv
 
 | Skill | Ce qu'il fait | Outils |
 |---|---|---|
+| [analyse-impact-chantier](skills/analyse-impact-chantier/) | À partir d'une emprise de travaux, enchaîne les autres skills (DT-DICT, PK de la voie, végétation LiDAR HD) et le cadastre pour rendre un dossier d'impact complet : registre des risques classés de critique à information (réseaux, voisinage électrique, voie ferrée, végétation, foncier), exploitants à consulter, parcelles occupées et riveraines, dossier PDF et carte HTML. | PostGIS ou QGIS seul |
 | [analyse-bilan-electrique](skills/analyse-bilan-electrique/) | Contrôle et analyse un bilan électrique ou une courbe de charge au pas de 15 ou 30 min (bilan demi-heure Enedis, ODRÉ) : pas manquants, doublons, changements d'heure, équilibre injection / soutirage / pertes / consommation, puis énergies journalières, pointes, part de production locale, pertes, avec un rapport HTML. Testé sur de vraies données Enedis. | Python (sans installation) |
 | [controle-topologie-reseau](skills/controle-topologie-reseau/) | Contrôle la topologie d'un réseau linéaire électrique ou ferroviaire : extrémités pendantes, quasi-connexions, croisements sans nœud (en tenant compte des franchissements), composantes et postes isolés, tronçons trop courts, boucles fermées en exploitation radiale, attributs incohérents. Produit une table d'anomalies localisées et un résumé, sans jamais toucher aux données source. Rapport PDF et carte HTML à partager. | PostGIS + pgRouting, ou QGIS seul |
 | [import-donnees-rte-enedis](skills/import-donnees-rte-enedis/) | Importe les données ouvertes RTE (ODRÉ) et Enedis / Agence ORE (lignes HTB, HTA, BT aériennes et souterraines, postes) en Lambert 93, avec tensions en kV et pose normalisées, au format du skill de topologie et du skill DT-DICT. | PostGIS, GDAL, QGIS |
 | [import-donnees-sncf-reseau](skills/import-donnees-sncf-reseau/) | Importe les données ouvertes SNCF Réseau (lignes du RFN, gares, passages à niveau, passerelles, ponts-route, passages souterrains) en Lambert 93 pour QGIS, contrôle les PK, détecte les sauts de PK et le sens des tronçons, et prépare les axes, bornes et sauts du skill de référencement PK. | PostGIS, GDAL, QGIS |
-| [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, QGIS |
+| [proximite-dt-dict](skills/proximite-dt-dict/) | Pré-analyse DT-DICT : repère les réseaux proches d'une emprise de travaux et liste les exploitants à consulter, avec classes de précision A, B, C, zones d'incertitude, fuseau de 3 m des réseaux aériens et investigations complémentaires à prévoir. Contrôle aussi l'emprise (surface, écart entre polygones). Ne remplace pas le guichet unique. | PostGIS, ou QGIS seul |
 | [referencement-pk-ferroviaire](skills/referencement-pk-ferroviaire/) | Convertit des PK (`15+342`) en coordonnées Lambert 93 et inversement, avec calage sur les bornes, gestion des sauts de PK, décalage latéral, événements linéaires de PK à PK, et alerte quand un point est à plus de 20 m de l'axe. Sortie en CSV avec la méthode utilisée et les avertissements. | PostGIS, ou QGIS seul |
 | [vegetation-lidar-hd](skills/vegetation-lidar-hd/) | Repère la végétation trop haute ou trop proche des lignes électriques aériennes et des voies ferrées à partir des nuages de points classés LiDAR HD de l'IGN : hauteur au-dessus du sol, risque de chute d'arbre, hauteur excessive dans l'emprise, priorité par tronçon de 25 m et par côté, sortie CSV et GeoJSON. | Python (numpy, laspy), QGIS |
 
@@ -47,20 +48,35 @@ Chaque skill a son dossier `exemples/` :
 - `demandes_exemple.md` : des phrases à donner à Claude pour l'essayer ;
 - `verifier_resultats.sql` (pour les nouveaux skills) : un test automatique, lancé par `tester_exemples.sh`, qui s'arrête en erreur si les résultats s'écartent des résultats attendus.
 
+Le skill `analyse-impact-chantier` enchaîne les autres : son test `exemples/chainer_exemple.sh` charge le chantier d'exemple et la voie du skill PK, fait tourner le vrai script de végétation sur un nuage LiDAR fictif (si `numpy` et `laspy` sont installés), lance les scripts DT-DICT et PK puis la synthèse, et vérifie le registre des risques.
+
 Le skill `vegetation-lidar-hd` n'utilise pas de base : il lui faut Python 3 avec `numpy` et `laspy` (`pip install numpy "laspy[lazrs]"`). Son test `exemples/test_vegetation.py` génère un petit nuage fictif au format LiDAR HD, lance l'analyse et compare au résultat attendu ; `tester_exemples.sh` le lance aussi.
 
 ### Sans PostGIS, avec QGIS
 
-Les skills `controle-topologie-reseau` et `referencement-pk-ferroviaire` ont un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
+Les skills `controle-topologie-reseau`, `referencement-pk-ferroviaire`, `proximite-dt-dict` et `analyse-impact-chantier` ont un dossier `qgis/` qui contient un algorithme de traitement QGIS équivalent au script SQL (testé avec QGIS 3.34, aucune extension à installer) :
 1. Dans QGIS, ouvrez la boîte à outils Traitements, cliquez sur l'icône Python puis *Ajouter un script à la boîte à outils…* et choisissez le fichier `.py`.
 2. L'algorithme apparaît dans *Scripts > Géomatique des réseaux*. Les jeux d'exemple existent aussi en GeoPackage (`exemples/*.gpkg`) pour l'essayer tout de suite.
+3. L'analyse d'impact lance les algorithmes DT-DICT et PK : ajoutez aussi ces deux scripts à la boîte à outils.
 
-Pour vérifier les deux algorithmes sans ouvrir QGIS, lancez avec le Python de QGIS (sous Windows, `python-qgis` dans l'« OSGeo4W Shell ») :
+Pour vérifier les algorithmes sans ouvrir QGIS, lancez avec le Python de QGIS (sous Windows, `python-qgis` dans l'« OSGeo4W Shell ») :
 ```bash
 python3 outils/tester_qgis.py
 ```
 
 La façon la plus parlante de tester : chargez les données d'exemple, donnez à Claude une des demandes types, et comparez sa réponse aux résultats attendus.
+
+## Dossier d'impact d'un chantier
+
+`skills/analyse-impact-chantier/` rassemble tout ce qu'un chantier touche en un dossier à partager : un PDF (carte avec les risques numérotés, synthèse, exploitants, registre des risques, parcelles) et une carte HTML interactive.
+
+```bash
+cd skills/analyse-impact-chantier
+python3 scripts/chainer_postgis.py --base "dbname=ma_base" --dtdict mes_sources_dtdict.sql \
+    --pk mes_sources_pk.sql --impact mes_sources_impact.sql --gpkg impact.gpkg
+python3 rapport/dossier_impact.py impact.gpkg --pdf dossier_impact.pdf --html carte_impact.html   # Python de QGIS
+```
+Dans QGIS, l'algorithme *Analyse d'impact d'un chantier* écrit directement le PDF et la carte. Exemples : `exemples/dossier_exemple.pdf` et `exemples/carte_exemple.html`.
 
 ## Rapport d'anomalies à partager
 
@@ -87,7 +103,7 @@ skills/
     SKILL.md              instructions lues par Claude (frontmatter name + description)
     scripts/              scripts SQL testés que le skill utilise (PostGIS)
     qgis/                 algorithme de traitement QGIS équivalent (PyQGIS)
-    rapport/              (topologie) rapport PDF et carte HTML à partager
+    rapport/              (topologie, impact) rapport PDF et carte HTML à partager
     exemples/             données d'exemple, résultats attendus, demandes types
 modele-skill/             gabarit à copier pour créer un nouveau skill
 outils/                   empaquetage en ZIP, tests des exemples (SQL et QGIS)

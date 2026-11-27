@@ -10,11 +10,12 @@
   "plugins": [
     {
       "name": "geomatique-reseaux",
-      "description": "Analyse des bilans électriques, contrôle de topologie, référencement PK, proximité DT-DICT, import des données ouvertes SNCF Réseau, RTE et Enedis, et végétation à partir du LiDAR HD",
+      "description": "Analyse d'impact de chantier, analyse des bilans électriques, contrôle de topologie, référencement PK, proximité DT-DICT, import des données ouvertes SNCF Réseau, RTE et Enedis, et végétation à partir du LiDAR HD",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/analyse-bilan-electrique",
+        "./skills/analyse-impact-chantier",
         "./skills/controle-topologie-reseau",
         "./skills/import-donnees-rte-enedis",
         "./skills/import-donnees-sncf-reseau",
