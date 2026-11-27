@@ -45,3 +45,7 @@ psql -d ma_base -f scripts/controles_topologie.sql
 Les numéros de nœuds (`noeud 14`…) dépendent de l'ordre de construction et peuvent varier ; les identifiants de tronçons, eux, sont stables.
 
 Les doublons sont retirés **avant** le graphe : sinon T3 et T16 formeraient une fausse boucle.
+
+## Version QGIS
+
+L'algorithme `qgis/controle_topologie_reseau.py`, lancé sur `reseau_exemple.gpkg` (couches `troncons` et `postes`), doit donner exactement le même résumé, réparti entre la couche *Anomalies ponctuelles* (8) et la couche *Anomalies linéaires* (10). `python3 outils/tester_qgis.py` le vérifie automatiquement, avec le rapport PDF et la carte HTML (`rapport_exemple.pdf`, `carte_exemple.html`).
