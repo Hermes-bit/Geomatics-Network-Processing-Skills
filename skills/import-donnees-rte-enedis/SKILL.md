@@ -65,7 +65,10 @@ Pour une zone, filtrer dès le téléchargement (API Opendatasoft `?refine=code_
 `attributs` garde tous les champs d'origine en JSON. Dans la réponse : longueur par domaine et par pose, nombre de postes par type, contrôles par type, hypothèses (tension HTA retenue, champs utilisés), rappel de la licence et de la précision.
 
 ## Dans QGIS sans PostGIS
-Ouvrir les GeoJSON, *Reprojeter la couche* en EPSG:2154, *Fusionner des couches vecteur*, puis une colonne `tension_kv` avec la calculatrice de champs (`CASE WHEN "tension" = 'HTA' THEN 20 ...`). Le skill de topologie a besoin de PostGIS et pgRouting.
+Ouvrir les GeoJSON, *Reprojeter la couche* en EPSG:2154, *Fusionner des couches vecteur*, puis une colonne `tension_kv` avec la calculatrice de champs (`CASE WHEN "tension" = 'HTA' THEN 20 ...`). Le contrôle de topologie se fait ensuite avec PostGIS et pgRouting, ou dans QGIS seul avec l'algorithme `qgis/controle_topologie_reseau.py` du skill `controle-topologie-reseau`.
+
+## Séries de puissance (bilans électriques)
+Les mêmes portails publient des séries temporelles sans géométrie, comme le bilan électrique demi-heure d'Enedis (consommation, production, pertes au pas de 15 min). Elles ne s'importent pas avec ce skill : utiliser le skill `analyse-bilan-electrique`.
 
 ## Exemple
 `exemples/` contient des extraits fictifs au format des exports RTE et Agence ORE (`donnees_exemple.sql`) : lignes 63 et 225 kV, une ligne hors tension, un départ HTA aérien et souterrain avec une quasi-connexion, de la BT, un poste source et des postes HTA/BT dont un en double. Avec les résultats attendus (`resultats_attendus.md`), le test automatique (`verifier_resultats.sql`), le test d'enchaînement avec le skill de topologie (`verifier_compatibilite_topologie.sh`) et des demandes types (`demandes_exemple.md`).

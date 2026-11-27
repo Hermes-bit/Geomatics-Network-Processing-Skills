@@ -12,6 +12,7 @@ body:
     attributes:
       label: Skill concerné
       options:
+        - analyse-bilan-electrique
         - controle-topologie-reseau
         - import-donnees-rte-enedis
         - import-donnees-sncf-reseau
