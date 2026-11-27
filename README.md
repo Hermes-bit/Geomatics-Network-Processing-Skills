@@ -72,3 +72,6 @@ Pour ajouter un skill, voir [CONTRIBUER.md](CONTRIBUER.md).
 
 ## Avertissement
 Les jeux de données d'exemple sont fictifs. Les skills aident à contrôler et convertir des données, mais ne remplacent pas la vérification par une personne compétente, en particulier pour les DT-DICT et tout usage réglementaire.
+
+## Licence
+Ce dépôt est publié sous **licence MIT** (voir [LICENSE](LICENSE)) : chacun peut utiliser, copier, modifier et redistribuer les skills, y compris dans un cadre professionnel, à condition de conserver la mention de copyright et le texte de la licence. Les skills sont fournis sans garantie.
